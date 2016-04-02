@@ -1,0 +1,27 @@
+<h1>This is the signup page</h1>
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Sign Up</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('sign_up') }}" method=post>
+    <dl>
+      <dt>Choose a Username:
+      <dd><input type=text name=usrname>
+      </br>
+      </br>
+      <dt>Choose a Password:
+      <dd><input type=password name=usrpass>
+      </br>
+      </br>
+      <dt>Select an Account Type:
+      <select name="usrtype">
+      <option value="consumer">Consumer</option>
+      <option value="producer">Producer</option>
+      <option value="distributor">Distributor</option>
+      </select>
+      </br>
+      </br>
+      <dd><input type=submit value=create>
+    </dl>
+  </form>
+{% endblock %}
