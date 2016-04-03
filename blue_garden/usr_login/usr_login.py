@@ -61,6 +61,8 @@ def login():
     
         if authuser(request.form['usrname'], request.form['usrpass']):
             session['logged_in'] = True
+            session['uid'] = request.form['usrname']
+            print(session)
             add_user()
             flash('You were logged in')
             if request.form['usrtype'] == 'consumer':
@@ -78,7 +80,9 @@ def login():
     
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    #session.pop('logged_in', None)
+    session.clear()
+    print(session)
     #g.db.execute('delete from usrlist where usrname=??????')
     flash('You were logged out')
     return redirect(url_for('login'))#unique constraint fail if usr logs out and tries to signin again (drop usr from db here)
