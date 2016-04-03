@@ -30,9 +30,8 @@ def teardown_request(exception):
 
 
 @app.route('/')#note the root
-def show_entries():#modify for current user list visible to admin login only
-#    cur = g.db.execute('select usrname, usrpass, usrtype from usrlist order by usrname asc')
-#    entries = [dict(usrname=row[0], usrpass=row[1], usrtype=row[2]) for row in cur.fetchall()]
+def display_layout():
+    
     return render_template('layout.html')
 
 #puts user into the currently-logged-in list on database
@@ -64,8 +63,12 @@ def login():
             session['logged_in'] = True
             add_user()
             flash('You were logged in')
-            #return redirect(url_for('this depends on the usrtype'))#make new templates for each usrtype
-            return redirect(url_for('layout'))
+            if request.form['usrtype'] == 'consumer':
+                return render_template('consumer.html')
+            elif request.form['usrtype'] == 'producer':
+                return render_template('producer.html')
+            elif request.form['usrtype'] == 'distributor':
+                return render_template('distributor.html')
         elif request.form['usrname'] not in usr_dict:
             error = 'Invalid username'
         elif request.form['usrpass'] not in usr_dict[request.form['usrname']]:
@@ -76,8 +79,9 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
+    #g.db.execute('delete from usrlist where usrname=??????')
     flash('You were logged out')
-    return redirect(url_for('login'))
+    return redirect(url_for('login'))#unique constraint fail if usr logs out and tries to signin again (drop usr from db here)
     
 if __name__ == '__main__':
     app.run()
