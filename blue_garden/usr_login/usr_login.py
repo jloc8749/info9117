@@ -61,9 +61,9 @@ def login():
     
         if authuser(request.form['usrname'], request.form['usrpass']):
             session['logged_in'] = True
-            session['uid'] = request.form['usrname']
-            print(session)
-            add_user()
+            session['uid'] = request.form['usrname']#this should be more like:
+            print(session)#id integer primary key autoincrement, because usr might clear cookies or interupt session before logout
+            add_user()#and db would fail due to unique constraint
             flash('You were logged in')
             if request.form['usrtype'] == 'consumer':
                 return render_template('consumer.html')
@@ -80,12 +80,14 @@ def login():
     
 @app.route('/logout')
 def logout():
-    #session.pop('logged_in', None)
+    g.db.execute('delete from usrlist where usrname=?',
+    [session['uid']])#remove the user from logged in database
+    g.db.commit()
     session.clear()
     print(session)
-    #g.db.execute('delete from usrlist where usrname=??????')
+    
     flash('You were logged out')
-    return redirect(url_for('login'))#unique constraint fail if usr logs out and tries to signin again (drop usr from db here)
+    return redirect(url_for('login'))
     
 if __name__ == '__main__':
     app.run()
