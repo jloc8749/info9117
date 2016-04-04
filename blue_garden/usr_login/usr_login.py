@@ -1,5 +1,6 @@
 
 import sqlite3
+import string
 from usersdict import *
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
@@ -31,7 +32,6 @@ def teardown_request(exception):
 
 @app.route('/')#note the root
 def display_layout():
-    
     return render_template('layout.html')
 
 #puts user into the currently-logged-in list on database
@@ -60,10 +60,18 @@ def login():
     if request.method == 'POST':
     
         if authuser(request.form['usrname'], request.form['usrpass']):
+            
+            add_user()                                    
             session['logged_in'] = True
-            session['uid'] = request.form['usrname']#this should be more like:
-            print(session)#id integer primary key autoincrement, because usr might clear cookies or interupt session before logout
-            add_user()#and db would fail due to unique constraint
+            session['uid'] = request.form['usrname']#should probably com from db (after the add_user() call)-> add to nxt statment?
+            dbcursor = g.db.execute('select sessionid from usrlist where usrname=? order by sessionid desc',
+            [session['uid']])
+            for entry in dbcursor:
+                sessionids = [str(entry).strip(string.punctuation)] 
+            sessionid = sessionids[0]
+            session['sessionid'] = sessionid
+            print(session)
+            
             flash('You were logged in')
             if request.form['usrtype'] == 'consumer':
                 return render_template('consumer.html')
@@ -80,10 +88,12 @@ def login():
     
 @app.route('/logout')
 def logout():
-    g.db.execute('delete from usrlist where usrname=?',
-    [session['uid']])#remove the user from logged in database
+    g.db.execute('delete from usrlist where sessionid=?',
+    [session['sessionid']])#remove the user from logged in database
     g.db.commit()
-    session.clear()
+    print(session['uid'],'loggedout')
+    session['logged_in'] = False
+    #session.clear()#issue that only one cookie per machine -> 2 logins overwritten and only one can log out???
     print(session)
     
     flash('You were logged out')

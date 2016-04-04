@@ -1,6 +1,7 @@
 drop table if exists usrlist;
 create table usrlist (
-  usrname text primary key,
+  sessionid integer primary key autoincrement,
+  usrname text,--no need to be unique for concurrent logins (is key in dict already)
   usrpass text not null,
   usrtype text not null
 );
