@@ -20,6 +20,14 @@ def newuser(nombre,llave):
             #u.write(nombre + ' ' + llave + '/n') #appending to the same line..
             print (nombre + ' ' + llave, file=u)
             
-        
-    
+def rm_usr(nombre,llave):
+    tmp = []
+    with open('users','r') as u:
+        for line in u:
+            if nombre+' '+llave not in line:
+                tmp.append(line)
+    with open('users','w') as u:
+        for line in tmp:
+            print(line.strip(), file=u)
+            
 
