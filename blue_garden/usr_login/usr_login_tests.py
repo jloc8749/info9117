@@ -1,11 +1,13 @@
 import os
+import usr_login
 from usr_login import *
 import unittest
-import tempfile
 
 class usr_loginTestCase(unittest.TestCase):
 
     def setUp(self):
+        usr_login.app.config['TESTING'] = True
+        self.app = usr_login.app.test_client()
         print('setup')
 
     def tearDown(self):
@@ -20,8 +22,13 @@ class usr_loginTestCase(unittest.TestCase):
         
         
         
-        
-        
+    #def test_index_page(self):
+        #rv = self.app.get('/')
+
+        #assert 'You can either login' in rv.data
+        #var1 = 'You can either login'
+        #var2 = rv.data
+        #self.assertEquals(var1, var2, msg=None)
         
         
         
