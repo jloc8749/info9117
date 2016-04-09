@@ -1,4 +1,7 @@
 #make dict of users
+testuser = 'jlock'
+testpass = 'jlock'
+
 usr_dict = {}#change
 def usrdict():#these names!!
     with open('users','r') as u:

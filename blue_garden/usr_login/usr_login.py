@@ -5,8 +5,27 @@ from usersdict import *
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
+host="localhost"
+port="5000"
+address="http://localhost:5000"
+
 app = Flask(__name__)
 app.config.from_object('config')
+
+#---------------------------For selenium to automate behave tests
+def serve_forever():
+    app.run(host,int(port))
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError("Not running with Werkzeug server")
+    func()
+
+@app.route('/shutdown')
+def shutdown():
+    shutdown_server()
+#------------------------------------
 
 #point to the database file defined in config.py
 def connect_db():
@@ -36,9 +55,9 @@ def display_layout():
 
 #puts user into the currently-logged-in list on database
 @app.route('/add', methods=['POST'])
-def add_user():
+def add_user(uname,passw,utype):
     g.db.execute('insert into usrlist (usrname, usrpass, usrtype) values (?, ?, ?)',
-                 [request.form['usrname'], request.form['usrpass'], request.form['usrtype']])
+                 [uname, passw, utype])
     g.db.commit()
     
     
@@ -61,17 +80,15 @@ def login():
     
         if authuser(request.form['usrname'], request.form['usrpass']):
             
-            add_user()                                    
+            add_user(request.form['usrname'], request.form['usrpass'],request.form['usrtype'])                                    
             session['logged_in'] = True
-            session['uid'] = request.form['usrname']#should probably com from db (after the add_user() call)-> add to nxt statment?
+            session['uid'] = request.form['usrname']
             dbcursor = g.db.execute('select sessionid from usrlist where usrname=? order by sessionid desc',
             [session['uid']])
             for entry in dbcursor:
                 sessionids = [str(entry).strip(string.punctuation)] 
             sessionid = sessionids[0]
             session['sessionid'] = sessionid
-            print(session)
-            
             flash('You were logged in')
             if request.form['usrtype'] == 'consumer':
                 return render_template('consumer.html')
@@ -88,12 +105,12 @@ def login():
     
 @app.route('/logout')
 def logout():
-    g.db.execute('delete from usrlist where sessionid=?',
-    [session['sessionid']])#remove the user from logged in database
+    g.db.execute('delete from usrlist where sessionid=?',#remove the user from logged in database
+    [session['sessionid']])
     g.db.commit()
     print(session['uid'],'loggedout')
     session['logged_in'] = False
-    #session.clear()#issue that only one cookie per machine -> 2 logins overwritten and only one can log out???
+    #session.clear()
     print(session)
     
     flash('You were logged out')

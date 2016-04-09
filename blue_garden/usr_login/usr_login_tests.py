@@ -1,7 +1,11 @@
 import os
 import usr_login
+import usersdict
 from usr_login import *
 import unittest
+
+testuser = usersdict.testuser
+testpass = usersdict.testpass
 
 class usr_loginTestCase(unittest.TestCase):
 
@@ -11,21 +15,26 @@ class usr_loginTestCase(unittest.TestCase):
         print('setup')
 
     def tearDown(self):
-        if 'testname' in usr_dict:
-            rm_usr('testname','testpass')
+        if usersdict.testuser in usr_dict:
+            rm_usr(testuser,testpass)
         
-        
+#Test add user to users file        
     def test_user_dict(self):
-        newuser('testname','testpass')
+        newuser(testuser,testpass)
         print('added usr')
-        assert authuser('testname','testpass')
+        assert authuser(testuser,testpass)
         
-        
-        
-    #def test_index_page(self):
-        #rv = self.app.get('/')
+#Test login and logged out status of cookie
 
-        #assert 'You can either login' in rv.data
+
+#Test sqlite database for currently logged in users
+        
+        
+#Useless test of the index page
+    def test_index_page(self):
+        rv = self.app.get('/')
+
+        assert b'You can either login' in rv.data
         #var1 = 'You can either login'
         #var2 = rv.data
         #self.assertEquals(var1, var2, msg=None)
