@@ -2,8 +2,8 @@
 testuser = 'jlock'
 testpass = 'jlock'
 
-usr_dict = {}#change
-def usrdict():#these names!!
+usr_dict = {}
+def usrdict():
     with open('users','r') as u:
         for each in u:
             usrname, usrpass = each.split()

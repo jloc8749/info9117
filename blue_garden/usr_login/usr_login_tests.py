@@ -18,26 +18,39 @@ class usr_loginTestCase(unittest.TestCase):
         if usersdict.testuser in usr_dict:
             rm_usr(testuser,testpass)
         
-#Test add user to users file        
+#Test add user to users file  and login authentication passes for added user    
     def test_user_dict(self):
+        #q = self.app.get('/')
         newuser(testuser,testpass)
-        print('added usr')
+        #self.assertEqual(q.context['text'], 'Hello!')
         assert authuser(testuser,testpass)
+        #when username and password don;t match
+        assert not newuser(testuser,'nottherealpassword')
         
 #Test login and logged out status of cookie
-
+    def test_session(self):
+        if authuser(testuser,testpass):
+            rm_usr(testuser,testpass)
+        
+        #assert session['logged_in'] == False
+        #test_user_dict()#added test user accnt and logged it in
+        #logout()
+        #assert self.app.session['logged_in'] == False
+        
+        
+        def test_login(self):
+            rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
+            
+            assert b'logged in' in rv.data
 
 #Test sqlite database for currently logged in users
-        
+    def call_the_db():
+        pass
         
 #Useless test of the index page
     def test_index_page(self):
         rv = self.app.get('/')
-
         assert b'You can either login' in rv.data
-        #var1 = 'You can either login'
-        #var2 = rv.data
-        #self.assertEquals(var1, var2, msg=None)
         
         
         
