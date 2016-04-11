@@ -29,12 +29,12 @@ class usr_loginTestCase(unittest.TestCase):
 
 #Test that existing user can login        
     def test_login(self):
-        #rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
+
         rv = self.app.post('/login',data=dict(
         usrname=testuser,
-        usrpass=testpass),follow_redirects=True)
+        usrpass=testpass,), follow_redirects=True)
         
-        assert b'logged in' in rv.data           
+        assert b'consumer' in rv.data      #'You were logged in' flash should be tested     
 
         
 #Test login and logged out status of cookie
