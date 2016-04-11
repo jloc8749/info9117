@@ -28,10 +28,13 @@ class usr_loginTestCase(unittest.TestCase):
         assert not newuser(testuser,'nottherealpassword')
 
 #Test that existing user can login        
-    #def test_login(self):
-    #    rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
-     #       
-      #  assert b'logged in' in rv.data             
+    def test_login(self):
+        #rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
+        rv = self.app.post('/login',data=dict(
+        usrname=testuser,
+        usrpass=testpass),follow_redirects=True)
+        
+        assert b'logged in' in rv.data           
 
         
 #Test login and logged out status of cookie
