@@ -14,7 +14,7 @@ app.config.from_object('config')
 
 #---------------------------For selenium to automate behave tests
 def serve_forever():
-    app.run(host,int(port))
+    app.run()#host,int(port)
 
 def shutdown_server():
     func = request.environ.get('werkzeug.server.shutdown')
@@ -49,7 +49,7 @@ def teardown_request(exception):
         db.close()
 
 
-@app.route('/')#note the root
+@app.route('/')
 def display_layout():
     return render_template('layout.html')
 

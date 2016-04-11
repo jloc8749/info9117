@@ -26,6 +26,13 @@ class usr_loginTestCase(unittest.TestCase):
         assert authuser(testuser,testpass)
         #when username and password don;t match
         assert not newuser(testuser,'nottherealpassword')
+
+#Test that existing user can login        
+    #def test_login(self):
+    #    rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
+     #       
+      #  assert b'logged in' in rv.data             
+
         
 #Test login and logged out status of cookie
     def test_session(self):
@@ -36,12 +43,7 @@ class usr_loginTestCase(unittest.TestCase):
         #test_user_dict()#added test user accnt and logged it in
         #logout()
         #assert self.app.session['logged_in'] == False
-        
-        
-        def test_login(self):
-            rv = self.app.post('/login',usrname=testuser,usrpass=testpass,follow_redirects=True)
-            
-            assert b'logged in' in rv.data
+
 
 #Test sqlite database for currently logged in users
     def call_the_db():
